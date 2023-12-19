@@ -1,0 +1,43 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Provenance Graph</title>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.css">
+    <link rel="stylesheet" href="/CSS/style.css">
+    <script type="module" src="./scripts/Graphio.js"></script>
+    <script type="text/javascript">
+        // Define the search_query function
+        function search_query() {
+            helloWorld();
+        }
+
+        // JavaScript function to get the input value
+        function getValue() {
+            // Get the input element by its ID
+            var inputElement = document.getElementById("input");
+
+            // Access the value property to get the input value
+            var inputValue = inputElement.value;
+
+            // Display the value
+            var resultElement = document.getElementById("result");
+            resultElement.textContent = "Input Value: " + inputValue;
+        }
+    </script>
+</head>
+<body>
+    <h1>Provenance Graph</h1>
+
+    <label for="input">Field Input:</label>
+    <input type="text" id="input" name="input">
+    
+    <!-- Add a button to trigger the JavaScript functions -->
+    <button onclick="search_query()">Call helloWorld()</button>
+    <button onclick="getValue()">Get Input Value</button>
+
+    <!-- Display the result -->
+    <p id="result"></p>
+</body>
+</html>
