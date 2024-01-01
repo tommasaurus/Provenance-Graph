@@ -1,10 +1,54 @@
-// import { Client } from '../node_modules/@elastic/elasticsearch';
-// // import { Client } from '@elastic/elasticsearch';
 // const { Client } = require('@elastic/elasticsearch');
+// import { Client } from '@elastic/elasticsearch';
 // const clientURL = 'http://elastic:stimulus5affect-roof@beryl.cs.virginia.edu:9200'
 // const client = new Client({
 //     node: clientURL,
 // });
+export function search(id) {
+    fetch(`http://localhost:3000/search?id=${encodeURIComponent(id)}`).then(response => response.json()).then(data => console.log(data)).catch(error => console.error('Error:', error));
+    // fetch(`http://localhost:3000/search?id=${encodeURIComponent(id)}`)
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         const resultsContainer = document.getElementById('searchResults');
+    //         //resultsContainer.innerHTML = ''; // Clear previous results
+
+    //         data.forEach(doc => {
+    //             // Assuming you want to display some content from '_source'
+    //             const content = doc._source.yourFieldName; // Replace 'yourFieldName' with the actual field name you want to display
+    //             const div = document.createElement('div');
+    //             div.textContent = `ID: ${doc._id}, Content: ${content}`;
+    //             //resultsContainer.appendChild(div);
+    //         });
+    //     })
+    //     .catch(error => console.error('Error:', error));
+    }
+
+
+async function search_query(vertexValue = ["cMLR0ooBBBvBsP_nxiN-"], vertexKey = ['_id'], vertexLabel = "None") {
+    // const filters = vertexKey.map((value, index) => {
+    //     return {
+    //         match: {
+    //             [value]: vertexValue[index]
+    //         }
+    //     };
+    // });
+
+    // console.log(filters)
+
+    const executedQuery = {
+        index: 'atlasv2-edr-h1-s4',
+        body: {
+            query: {
+                match: {
+                    _id: 'XcLR0ooBBBvBsP_nxiN9'
+                }
+            }
+        }
+    };
+    var response = await client.search(executedQuery);
+    const data = response.hits.hits;
+    return data
+}
 
 export function hello2() {
     console.log("Hello, world!");
@@ -16,78 +60,5 @@ export function helloWorld() {
     return "HELLLLOOOO"
 }
 
-async function search_query(vertexValue = ["cMLR0ooBBBvBsP_nxiN-"], vertexKey = ['_id'], vertexLabel = "None") {
-    const filters = vertexKey.map((value, index) => {
-        return {
-            match: {
-                [value]: vertexValue[index]
-            }
-        };
-    });
-
-    console.log(filters)
-
-    const executedQuery = {
-        index: 'atlasv2-edr-h1-s4',
-        body: {
-            query: {
-                bool: {
-                    must: filters
-                }
-            }
-        }
-    };
-    var response = await client.search(executedQuery);
-    const data = response.hits.hits;
-    return data
-}
-
-
-// Define your Elasticsearch query
-
-// var graphioRemake = (function () {
-//     async function search_query(vertexValue = ["cMLR0ooBBBvBsP_nxiN-"], vertexKey = ['_id'], vertexLabel = "None") {
-//         // var vertexValue =  "XcLR0ooBBBvBsP_nxiN9"//$('#search_field').val(); //Vertex Value given only support ids
-//         //let vertexKey = $('#search_value').val(); //Vertex Key
-//         //let vertexLabel = $('#label_field').val(); //Vertex Label Filter
-//         const filters = vertexKey.map((value, index) => {
-//             return {
-//                 match: {
-//                     [value]: vertexValue[index]
-//                 }
-//             };
-//         });
-
-//         console.log(filters)
-            
-//         const executedQuery = {
-//             index: 'atlasv2-edr-h1-s4',
-//             body: {
-//                 query: {
-//                     bool: {
-//                         must: filters
-//                     }
-//                 }
-//             }
-//         };
-
-//         var response = await client.search(executedQuery);
-//         const data = response.hits.hits;
-//         return data
-//     }
-
-//     return {
-//         search_query: search_query
-//     }
-// })();
-
-// var graphioRemakeInstance = graphioRemake; 
 // const result = await search_query(["XcLR0ooBBBvBsP_nxiN9"], ['_id'], 'None');
-// console.log(result)
-
-
-// graphioRemakeInstance.search_query(["atlasv2-edr-h1-s4", "cMLR0ooBBBvBsP_nxiN-", "7DMF69PK-05e6ded8-000003d8-00000000-1d89bcfe3ac77ff"], ["_index", "_id", "parent_guid"]).then(result => {
-//     console.log(result); // Handle the resolved value here
-// }).catch(error => {
-//     console.error(error); // Handle any errors
-// });
+// console.log(result);
