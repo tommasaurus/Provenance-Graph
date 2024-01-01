@@ -6,37 +6,20 @@
     <title>Provenance Graph</title>
     <link rel="stylesheet" href="https://cdn.simplecss.org/simple.css">
     <link rel="stylesheet" href="/CSS/style.css">
-    <a href="node_modules/@elastic/elasticsearch" target="_blank">Download PDF</a>
-    
-    <!-- <script src="https://cdn.jsdelivr.net/npm/@elastic/elasticsearch@8.11.0"></script>
-    <script>
-        // Now you can use the Client object directly
-        const clientURL = 'http://elastic:stimulus5affect-roof@beryl.cs.virginia.edu:9200'
-        const client = new Elasticsearch.Client({
-            node: clientURL,
-        });
-        // Your function or code here
-        function yourFunction() {
-            // Use the client or other functionality here
-            console.log('Using the Elasticsearch client:', client);
-        }
-
-        // Call your function
-        yourFunction();
-    </script> -->
+    <a href="node_modules/@elastic/elasticsearch" target="_blank">Download</a>
 
     <script type="module" src="scripts/Graphio.js"></script>
     <script type="module">
         import { helloWorld } from './scripts/Graphio.js';
         import { hello2 } from './scripts/Graphio.js';
-        //import { search_query } from './scripts/Graphio.js';
-    
-        import { Client } from '@elastic/elasticsearch';
-        const clientURL = 'http://elastic:stimulus5affect-roof@beryl.cs.virginia.edu:9200'
-        const client = new Client({
-            node: clientURL,
-        });
+        import { search } from './scripts/Graphio.js';
 
+        function search_query() {
+            const query = "XcLR0ooBBBvBsP_nxiN9";
+            search(query);
+            console.log("worked");
+        }
+        
         // Define the hello function
         function hello() {
             console.log("hellloooooo");
@@ -45,29 +28,6 @@
 
         function hello2html() {
             hello2();
-        }
-
-        // async function search() {
-        //     const result = await search_query(["XcLR0ooBBBvBsP_nxiN9"], ['_id'], 'None')
-        //     console.log(result)
-        //     console.log("hello")
-        // }
-
-        window.hello = hello
-        window.hello2html = hello2html
-        //window.search = search
-    </script>
-
-    <!-- <script type="text/javascript" src="scripts/Graphio.js"></script>
-    <script type="text/javascript">
-        function hello2html() {
-            hello2();
-        }
-        
-        async function search() {
-            const result = await search_query(["XcLR0ooBBBvBsP_nxiN9"], ['_id'], 'None')
-            console.log(result)
-            console.log("hello")
         }
 
         // JavaScript function to get the input value
@@ -82,7 +42,13 @@
             var resultElement = document.getElementById("result");
             resultElement.textContent = "Input Value: " + inputValue;
         }
-    </script> -->
+        
+        window.hello = hello
+        window.hello2html = hello2html
+        window.search_query = search_query
+        window.getValue = getValue
+    </script>
+    
 </head>
 <body>
     <h1>Provenance Graph</h1>
@@ -94,7 +60,7 @@
     <button onclick="hello2html()">Call helloWorld2()</button>
     <button onclick="hello()">Call helloWorld()</button>
     <button onclick="getValue()">Get Input Value</button>
-    <button onclick="search()">Search</button>
+    <button onclick="search_query()">Search</button>
 
     <!-- Display the result -->
     <p id="result"></p>
