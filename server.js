@@ -44,7 +44,8 @@ app.get('/searchparent', async (req, res) => {
                     match: {
                         parent_guid: id//'XcLR0ooBBBvBsP_nxiN9'
                     }
-                }
+                },
+                size: 100
             }
         };
         var response = await client.search(executedQuery);
