@@ -11,12 +11,21 @@
     <script type="module">
         import { helloWorld } from './scripts/Graphio.js';
         import { search } from './scripts/Graphio.js';
+        import { searchByPID } from './scripts/Graphio.js';
         import { searchParent } from './scripts/Graphio.js';
+        import { searchParentByPID } from './scripts/Graphio.js';
 
         function search_query() {
             var inputElement = document.getElementById("input");
             var query = inputElement.value;
             search(query);
+            console.log("worked");
+        }
+
+        function search_pid() {
+            var inputElement = document.getElementById("input");
+            var query = inputElement.value;
+            search_pid(query);
             console.log("worked");
         }
         
@@ -25,6 +34,13 @@
             var query = inputElement.value;
             searchParent(query);
             console.log("worked2");
+        }
+
+        function search_parent_pid() {
+            var inputElement = document.getElementById("input");
+            var query = inputElement.value;
+            searchParentByPID(query);
+            console.log("worked3");
         }
 
         function hello() {
@@ -46,7 +62,9 @@
         window.hello = hello
         window.search_query = search_query
         window.getValue = getValue
+        window.search_pid = search_pid
         window.search_parent = search_parent
+        window.search_parent_pid = search_parent_pid
     </script>
     
 </head>
@@ -60,7 +78,9 @@
     <button onclick="hello()">Call helloWorld()</button>
     <button onclick="getValue()">Get Input Value</button>
     <button onclick="search_query()">Search</button>
+    <button onclick="search_pid()">Search by PID</button>
     <button onclick="search_parent()">Search by Parent GUID</button>
+    <button onclick="search_parent_pid()">Search by Parent PID</button>
 
     <!-- Display the result -->
     <p id="result"></p>
