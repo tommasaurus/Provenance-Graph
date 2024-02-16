@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D3 Force Simulation</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+
+<body>
+<svg id="visualization" width="800" height="600"></svg>
+
+<script>
+    // Define nodes
+    let expanded = []// stores the nodes that have been clicked so they can't be clicked
+    let nodes = [
+        { id: 1, name: 'Root', x: 400, y: 300},
+        { id: 2, name: 'Child 1',x: 500, y: 400 },
+        { id: 3, name: 'Child 2', x: 500, y: 200 },
+    ];
+
+    // Define links (edges)
+    let links = [
+        { source: 0, target: 1 },
+        { source: 0, target: 2 },
+    ];
+
+    // Create a D3 force simulation
+    const simulation = d3.forceSimulation(nodes)
+        .force('charge', d3.forceManyBody().strength(-100))
+        .force('center', d3.forceCenter(400, 300))
+        .force('link', d3.forceLink(links).distance(100))
+        .on('tick', customTick);
+
+    // Custom tick function for updating positions of nodes and links
+    function customTick() {
+        nodeElements.attr('cx', d => d.x)
+            .attr('cy', d => d.y);
+
+        // Update link positions
+        linkElements.attr('x1', d => d.source.x)
+            .attr('y1', d => d.source.y)
+            .attr('x2', d => d.target.x)
+            .attr('y2', d => d.target.y);
+
+        // Update text and background positions
+        textElements.attr('x', d => d.x)
+            .attr('y', d => d.y + 25); // Adjust the value to position text properly
+        // if (isStable) {
+        //     // Restart the simulation
+        //     simulation.alpha(1).restart();
+        // }
+
+    }
+
+    // Create SVG elements for links
+    let linkElements = d3.select('#visualization')
+        .selectAll('line')
+        .data(links)
+        .enter()
+        .append('line')
+        .style('stroke', 'black')
+        .style('stroke-width', 2);
+
+    // Create SVG elements for nodes
+    let nodeElements = d3.select('#visualization')
+        .selectAll('circle')
+        .data(nodes)
+        .enter()
+        .append('circle')
+        .attr('r', 20)
+        .attr('fill', 'green')
+        .on('click', handleNodeClick)
+
+
+    let textElements = d3.select('#visualization')
+        .selectAll('text')
+        .data(nodes)
+        .enter()
+        .append('text')
+        .text(d => d.name)
+        .attr('text-anchor', 'middle')
+        .attr('alignment-baseline', 'middle')
+        .style('font-size', '12px')
+        .style('fill', 'black');
+
+
+    function handleNodeClick(event, d){
+        if(!(expanded.includes(d.name))) {
+            expanded.push(d.name);
+            // query for children
+            // for(let child in children){
+            //     nodes.push(child);
+            //     links.push({source: d.name, target: child});
+            // }
+        } else{
+            for(let i = 0; i <links.length;i++){
+                if(links[i].source.name === d.name){
+                    removeElement(links[i].target)
+                }
+            }
+
+            let index = expanded.indexOf(d.name);
+            expanded.splice(index,1)
+            for(let i = 0; i < links.length; i++){
+                if(links[i].source.name === d.name){
+                    removeElement(links[i].target);
+                }
+            }
+        }
+        simulation.alpha(1).restart();
+    }
+    function removeElement(d){
+        console.log("hello")
+        if(expanded.includes(d.name)){ //if the current node has been expanded recurse
+            for(let i = 0; i <links.length; i++)
+                if(link.source.name === d.name){ // if the link has the current node as
+                    // the source, call this function on target
+                    removeElement(links[i].target)
+                }
+            }
+        nodes = nodes.filter(node => node.name !== d.name);
+        console.log("nodes", nodes)
+        links = links.filter(link => link.target.name !== d.name);
+        console.log("links", links)
+        expanded = expanded.filter(node => node !== d.name);
+
+        
+        // Remove the node's SVG elements
+        nodeElements = nodeElements.data(nodes, d => d.id);
+        nodeElements.exit().remove();
+
+        // Remove the link's SVG elements
+        linkElements = linkElements.data(links);
+        linkElements.exit().remove();
+
+        // Remove the text's SVG elements
+        textElements = textElements.data(nodes, d => d.id);
+        textElements.exit().remove();
+
+        // Update the simulation with new nodes and links
+        simulation.nodes(nodes);
+        simulation.force('link').links(links);
+
+        // Restart the simulation
+        simulation.alpha(1).restart();
+    }
+
+</script>
+</body>
+</html>
