@@ -1,0 +1,24 @@
+{
+    "databases": [
+      {
+        "name": "atlasv2-edr-h1-s4",
+        "idField": "_id",
+        "actionField": "action",
+        "process":
+        {
+            "create": "ACTION_CREATE_PROCESS"
+        },
+        "network": 
+        {
+            "connect": "ACTION_CONNECTION_CREATE"
+        },
+        "file":
+        {
+            "read": "ACTION_FILE_OPEN_READ",
+            "open": "ACTION_FILE_MOD_OPEN",
+            "write": "ACTION_FILE_OPEN_WRITE"
+        }
+
+      }
+    ]
+  }
