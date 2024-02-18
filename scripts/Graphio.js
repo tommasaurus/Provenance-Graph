@@ -62,6 +62,38 @@ export function searchParentByPID(pid) {
     catch(error => console.error('Error:', error));
 }
 
+export function searchProcessPID(pid) {
+    fetch(`http://localhost:3000/searchprocesspid?id=${encodeURIComponent(pid)}`).
+    then(response => response.json()).
+    then(data => {
+        if (data) {
+            
+            console.log(data);            
+            return data[0];  
+        } else {
+            console.log('No data found');
+            return null; 
+        }
+    }).
+    catch(error => console.error('Error:', error));
+}
+
+export function searchChildProcess(id) {
+    fetch(`http://localhost:3000/search_child_process_by_id?id=${encodeURIComponent(id)}`).
+    then(response => response.json()).
+    then(data => {
+        if (data) {
+            
+            console.log(data);            
+            return data[0];  
+        } else {
+            console.log('No data found');
+            return null; 
+        }
+    }).
+    catch(error => console.error('Error:', error));
+}
+
 export function helloWorld() {
     console.log("Hello, world!");
     return "HELLLLOOOO"
