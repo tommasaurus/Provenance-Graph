@@ -5,14 +5,11 @@ const { Client } = require('@elastic/elasticsearch');
 const cors = require('cors')
 
 const app = express();
+app.use(cors());
 const clientURL = 'http://elastic:stimulus5affect-roof@beryl.cs.virginia.edu:9200'
 const client = new Client({
     node: clientURL,
 });
-
-// Middleware to parse JSON bodies
-app.use(cors());
-app.use(express.json());
 
 // Define a route for a sample Elasticsearch operation
 app.get('/search', async (req, res) => {
@@ -23,7 +20,7 @@ app.get('/search', async (req, res) => {
             body: {
                 query: {
                     match: {
-                        _id: id//'XcLR0ooBBBvBsP_nxiN9' HcLR0ooBBBvBsP_nxiNu
+                        _id: id//'XcLR0ooBBBvBsP_nxiN9' "HcLR0ooBBBvBsP_nxiNu"
                     }
                 }
             }
@@ -155,5 +152,6 @@ app.get('/search_child_process_by_id', async (req, res) => {
     }
 });
 
+// const PORT = 3000;
 const PORT = 3000;
-app.listen(PORT, () => console.log('Server running on port ${PORT}'))
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`))

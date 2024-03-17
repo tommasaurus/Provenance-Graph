@@ -1,5 +1,7 @@
+const PORT = 3000 // Edit this PORT constant based off whatever port you decide to use in server.js
+
 export function search(id) {
-    fetch(`http://localhost:3000/search?id=${encodeURIComponent(id)}`).
+    fetch(`http://localhost:${PORT}/search?id=${encodeURIComponent(id)}`).
     then(response => response.json()).
     then(data => {
         if (data) {
@@ -15,7 +17,7 @@ export function search(id) {
 }
 
 export function searchByPID(pid) {
-    fetch(`http://localhost:3000/searchbypid?id=${encodeURIComponent(pid)}`).
+    fetch(`http://localhost:${PORT}/searchbypid?id=${encodeURIComponent(pid)}`).
     then(response => response.json()).
     then(data => {
         if (data) {
@@ -31,7 +33,7 @@ export function searchByPID(pid) {
 }
 
 export function searchParent(guid) {
-    fetch(`http://localhost:3000/searchparent?id=${encodeURIComponent(guid)}`).
+    fetch(`http://localhost:${PORT}/searchparent?id=${encodeURIComponent(guid)}`).
     then(response => response.json()).
     then(data => {
         if (data) {
@@ -47,7 +49,7 @@ export function searchParent(guid) {
 }
 
 export function searchParentByPID(pid) {
-    fetch(`http://localhost:3000/searchparentbypid?id=${encodeURIComponent(pid)}`).
+    fetch(`http://localhost:${PORT}/searchparentbypid?id=${encodeURIComponent(pid)}`).
     then(response => response.json()).
     then(data => {
         if (data) {
@@ -63,7 +65,7 @@ export function searchParentByPID(pid) {
 }
 
 export function searchProcessPID(pid) {
-    fetch(`http://localhost:3000/searchprocesspid?id=${encodeURIComponent(pid)}`).
+    fetch(`http://localhost:${PORT}/searchprocesspid?id=${encodeURIComponent(pid)}`).
     then(response => response.json()).
     then(data => {
         if (data) {
@@ -79,7 +81,7 @@ export function searchProcessPID(pid) {
 }
 
 export function searchChildProcess(id) {
-    fetch(`http://localhost:3000/search_child_process_by_id?id=${encodeURIComponent(id)}`).
+    fetch(`http://localhost:${PORT}/search_child_process_by_id?id=${encodeURIComponent(id)}`).
     then(response => response.json()).
     then(data => {
         if (data) {
@@ -92,10 +94,5 @@ export function searchChildProcess(id) {
         }
     }).
     catch(error => console.error('Error:', error));
-}
-
-export function helloWorld() {
-    console.log("Hello, world!");
-    return "HELLLLOOOO"
 }
 
