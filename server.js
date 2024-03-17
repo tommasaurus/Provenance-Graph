@@ -141,7 +141,8 @@ app.get('/search_child_process_by_id', async (req, res) => {
                             }
                         ]
                     }
-                }
+                },
+                size: 10
             }
         };
         var response = await client.search(executedQuery);
