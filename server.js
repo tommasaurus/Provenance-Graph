@@ -1,3 +1,5 @@
+
+//node server.js to start the server
 const express = require('express');
 const { Client } = require('@elastic/elasticsearch');
 const cors = require('cors')

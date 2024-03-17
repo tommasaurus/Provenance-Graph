@@ -16,13 +16,15 @@
     let nodes = [
         { id: 1, name: 'Root', x: 400, y: 300},
         { id: 2, name: 'Child 1',x: 500, y: 400 },
-        { id: 3, name: 'Child 2', x: 500, y: 200 },
+
     ];
+    let index =3
+    let reverse = false
 
     // Define links (edges)
     let links = [
         { source: 0, target: 1 },
-        { source: 0, target: 2 },
+
     ];
 
     // Create a D3 force simulation
@@ -46,10 +48,7 @@
         // Update text and background positions
         textElements.attr('x', d => d.x)
             .attr('y', d => d.y + 25); // Adjust the value to position text properly
-        // if (isStable) {
-        //     // Restart the simulation
-        //     simulation.alpha(1).restart();
-        // }
+
 
     }
 
@@ -88,6 +87,19 @@
     function handleNodeClick(event, d){
         if(!(expanded.includes(d.name))) {
             expanded.push(d.name);
+            if(d.name === "Child 1"){
+                console.log(index-1, d.id-1)
+                nodes.push({ id: index, name: 'Child 2', x: 500, y: 200})
+                console.log(nodes)
+                links.push({ source: nodes[d.id-1], target: nodes[index-1] })
+                console.log(links)
+                index++;
+            }
+            if(d.name === "Root" && reverse){
+                nodes.push({ id: index, name: 'Predecessor', x: 300, y: 300 })
+                links.push({ source: nodes.find(node => node.name === "Child 1"), target: nodes.find(node => node.name === "Child 2")})
+                index++;
+            }
             // query for children
             // for(let child in children){
             //     nodes.push(child);
@@ -125,7 +137,7 @@
         console.log("links", links)
         expanded = expanded.filter(node => node !== d.name);
 
-        
+
         // Remove the node's SVG elements
         nodeElements = nodeElements.data(nodes, d => d.id);
         nodeElements.exit().remove();
