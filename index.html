@@ -9,14 +9,24 @@
 
     <script type="module" src="scripts/Graphio.js"></script>
     <script type="module">
-        import { helloWorld } from './scripts/Graphio.js';
         import { search } from './scripts/Graphio.js';
+        import { searchByPID } from './scripts/Graphio.js';
         import { searchParent } from './scripts/Graphio.js';
+        import { searchParentByPID } from './scripts/Graphio.js';
+        import { searchProcessPID } from './scripts/Graphio.js';
+        import { searchChildProcess } from './scripts/Graphio.js';
 
         function search_query() {
             var inputElement = document.getElementById("input");
             var query = inputElement.value;
             search(query);
+            console.log("worked");
+        }
+
+        function search_pid() {
+            var inputElement = document.getElementById("input");
+            var query = inputElement.value;
+            searchByPID(query);
             console.log("worked");
         }
         
@@ -27,26 +37,33 @@
             console.log("worked2");
         }
 
-        function hello() {
-            console.log("hellloooooo");
-            helloWorld();
+        function search_parent_pid() {
+            var inputElement = document.getElementById("input");
+            var query = inputElement.value;
+            searchParentByPID(query);
+            console.log("worked3");
         }
 
-        // JavaScript function to get the input value
-        function getValue() {
+        function search_process_pid() {
             var inputElement = document.getElementById("input");
+            var query = inputElement.value;
+            searchProcessPID(query);
+            console.log("worked4");
+        }
 
-            var inputValue = inputElement.value;
-
-            // Display the value
-            var resultElement = document.getElementById("result");
-            resultElement.textContent = "Input Value: " + inputValue;
+        function search_child_process() {
+            var inputElement = document.getElementById("input");
+            var query = inputElement.value;
+            searchChildProcess(query);
+            console.log("worked4");
         }
         
-        window.hello = hello
         window.search_query = search_query
-        window.getValue = getValue
+        window.search_pid = search_pid
         window.search_parent = search_parent
+        window.search_parent_pid = search_parent_pid
+        window.search_process_pid = search_process_pid
+        window.search_child_process = search_child_process
     </script>
     
 </head>
@@ -57,10 +74,12 @@
     <input type="text" id="input" name="input">
     
     <!-- Add a button to trigger the JavaScript functions -->
-    <button onclick="hello()">Call helloWorld()</button>
-    <button onclick="getValue()">Get Input Value</button>
     <button onclick="search_query()">Search</button>
+    <button onclick="search_pid()">Search by PID</button>
     <button onclick="search_parent()">Search by Parent GUID</button>
+    <button onclick="search_parent_pid()">Search by Parent PID</button>
+    <button onclick="search_process_pid()">Search Process PID</button>
+    <button onclick="search_child_process()">Search Child Process</button>
 
     <!-- Display the result -->
     <p id="result"></p>
