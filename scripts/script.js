@@ -1,14 +1,46 @@
 document.addEventListener('DOMContentLoaded', function () {
     let index = 0
-    let canvas = d3.select("body").append("svg")
-        .attr("width", 600)
-        .attr("height", 600)
+    const searchButton = document.querySelector('#searchButton');
+    const textBox = document.querySelector('#inputField');
+    const checkbox = document.querySelector('#reverseCheckbox')
+
+    searchButton.addEventListener('click', function() {
+        const inputValue = textBox.value;
+        let data = {
+            "name": "Root Process",
+            "pid": "fdjdhs",
+            "type": "process",
+            "children": [
+                {
+                    "name": "Process 1",
+                    "type": "process",
+                    "children": [
+                        {"name": "Process 2", "type": "process"},
+                        {"name": "File 2", "type": "file"},
+                        {"name": "Network 1", "type": "network"}
+                    ]
+                },
+                {
+                    "name": "File 1",
+                    "type": "file"
+                }
+            ]
+        };
+        update(data)
+        console.log("Search for:", inputValue);
+    })
+
+
+    let canvas = d3.select("#svgContainer").append("svg")
+        .attr("width", "100%") // Use 100% width of the container
+        // You might need to adjust the height calculation based on your actual control bar size
+        .attr("height", "calc(100% - 40px)") // Assuming the control bar is 40px high; adjust accordingly
         .append("g")
         .attr("transform", "translate(50, 50)");
 
     let tree = d3.tree().size([400, 400]);
     let expanded = [];
-
+    //require config.json
     // Define your JSON object here
     let data = {
         "name": "Root Process",
@@ -102,6 +134,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function nodeClick(event, d) {
         let nodeName = d.data.name;
+        let textBoxValue = textBox.value;
+        let isCheckboxChecked = checkbox.checked;
+        console.log(isCheckboxChecked);
+        console.log(textBoxValue);
         if (expanded.includes(nodeName)) {
             removeChildren(d.data);
             expanded = expanded.filter(e => e !== nodeName); // Remove from expanded list
