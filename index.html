@@ -15,47 +15,48 @@
         import { searchParentByPID } from './scripts/Graphio.js';
         import { searchProcessPID } from './scripts/Graphio.js';
         import { searchChildProcess } from './scripts/Graphio.js';
+        import { searchParentProcess } from './scripts/Graphio.js';
 
         function search_query() {
             var inputElement = document.getElementById("input");
             var query = inputElement.value;
-            search(query);
-            console.log("worked");
+            search(query);            
         }
 
         function search_pid() {
             var inputElement = document.getElementById("input");
             var query = inputElement.value;
-            searchByPID(query);
-            console.log("worked");
+            searchByPID(query);            
         }
         
         function search_parent() {
             var inputElement = document.getElementById("input");
             var query = inputElement.value;
-            searchParent(query);
-            console.log("worked2");
+            searchParent(query);            
         }
 
         function search_parent_pid() {
             var inputElement = document.getElementById("input");
             var query = inputElement.value;
-            searchParentByPID(query);
-            console.log("worked3");
+            searchParentByPID(query);            
         }
 
         function search_process_pid() {
             var inputElement = document.getElementById("input");
             var query = inputElement.value;
-            searchProcessPID(query);
-            console.log("worked4");
+            searchProcessPID(query);            
         }
 
         function search_child_process() {
             var inputElement = document.getElementById("input");
             var query = inputElement.value;
-            searchChildProcess(query);
-            console.log("worked4");
+            searchChildProcess(query);            
+        }
+
+        function search_parent_process() {
+            var inputElement = document.getElementById("input");
+            var query = inputElement.value;
+            searchParentProcess(query);            
         }
         
         window.search_query = search_query
@@ -64,6 +65,7 @@
         window.search_parent_pid = search_parent_pid
         window.search_process_pid = search_process_pid
         window.search_child_process = search_child_process
+        window.search_parent_process = search_parent_process
     </script>
     
 </head>
@@ -80,6 +82,7 @@
     <button onclick="search_parent_pid()">Search by Parent PID</button>
     <button onclick="search_process_pid()">Search Process PID</button>
     <button onclick="search_child_process()">Search Child Process</button>
+    <button onclick="search_parent_process()">Search Parent Process</button>
 
     <!-- Display the result -->
     <p id="result"></p>

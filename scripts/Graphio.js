@@ -7,6 +7,9 @@ export function search(id) {
         if (data) {
             console.log(data[0]["_source"]);
             console.log(data[0]["_source"]["parent_guid"]);
+            console.log(data[0]["_source"]["process_guid"]);
+            console.log(data[0]["_source"]["process_pid"]);
+            console.log(data[0]["_source"]["childproc_pid"]);
             return data[0];  
         } else {
             console.log('No data found');
@@ -80,8 +83,8 @@ export function searchProcessPID(pid) {
     catch(error => console.error('Error:', error));
 }
 
-export function searchChildProcess(id) {
-    fetch(`http://localhost:${PORT}/search_child_process_by_id?id=${encodeURIComponent(id)}`).
+export function searchChildProcess(guid) {
+    fetch(`http://localhost:${PORT}/search_child_process_by_guid?guid=${encodeURIComponent(guid)}`).
     then(response => response.json()).
     then(data => {
         if (data) {
@@ -96,3 +99,18 @@ export function searchChildProcess(id) {
     catch(error => console.error('Error:', error));
 }
 
+export function searchParentProcess(guid) {
+    fetch(`http://localhost:${PORT}/search_parent_process_by_guid?guid=${encodeURIComponent(guid)}`).
+    then(response => response.json()).
+    then(data => {
+        if (data) {
+            
+            console.log(data);            
+            return data[0];  
+        } else {
+            console.log('No data found');
+            return null; 
+        }
+    }).
+    catch(error => console.error('Error:', error));
+}
