@@ -1,3 +1,6 @@
+const PORT = 3000; //Default port for server.js
+// import { searchChildProcess } from 'Graphio.js';
+
 document.addEventListener('DOMContentLoaded', function () {
     let index = 0
     const searchButton = document.querySelector('#searchButton');
@@ -121,6 +124,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function addChildren(d) {
+        // const id = d.data.id;
+        // var data = searchChildProcess(id);
+
         index2 = index+1
         if (!d.children) {
             d.children = [
