@@ -120,9 +120,10 @@ app.get('/searchprocesspid', async (req, res) => {
     }
 });
 
-app.get('/search_child_process_by_id', async (req, res) => {
+// Query to search for the child process of the current process using the current process' guid
+app.get('/search_child_process_by_guid', async (req, res) => {
     try {
-        const { id } = req.query;
+        const { guid } = req.query;
         const executedQuery = {
             index: dbConfig.name,
             body: {
@@ -131,7 +132,7 @@ app.get('/search_child_process_by_id', async (req, res) => {
                         must: [
                             {
                                 match: {
-                                    _id: id 
+                                    parent_guid: guid 
                                 }
                             },
                             {
@@ -141,7 +142,42 @@ app.get('/search_child_process_by_id', async (req, res) => {
                             }
                         ]
                     }
-                }
+                },
+                size: 10
+            }
+        };
+        var response = await client.search(executedQuery);
+        const data = response.hits.hits;        
+        res.json(data);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// Query to search for the parent process of the current process using the current process' parent_guid
+app.get('/search_parent_process_by_guid', async (req, res) => {
+    try {
+        const { guid } = req.query;
+        const executedQuery = {
+            index: dbConfig.name,
+            body: {
+                query: {
+                    bool: {
+                        must: [
+                            {
+                                match: {
+                                    process_guid: guid 
+                                }
+                            },
+                            {
+                                match: {
+                                    action: dbConfig.process.create
+                                }
+                            }
+                        ]
+                    }
+                },
+                size: 10
             }
         };
         var response = await client.search(executedQuery);
