@@ -1,70 +1,48 @@
 const PORT = 3000; //Default port for server.js
-import { search } from './Graphio.js';
-
+import {search, searchChildProcess, searchParentProcess} from './Graphio.js';
 document.addEventListener('DOMContentLoaded', function () {
-    let index = 0
     const searchButton = document.querySelector('#searchButton');
     const textBox = document.querySelector('#inputField');
-    const checkbox = document.querySelector('#reverseCheckbox')
+    const checkbox = document.querySelector('#reverseCheckbox');
+    let dataForTree = {}
+
+    async function performSearch(input) {
+        return await search(input);
+    }
+
+    async function performsSearchChildProcess(input) {
+        return await searchChildProcess(input);
+    }
+    async function performsSearchParentProcess(input) {
+        return await searchParentProcess(input);
+    }
 
     searchButton.addEventListener('click', function() {
         const inputValue = textBox.value;
-        let data = {
-            "name": "Root Process",
-            "pid": "fdjdhs",
-            "type": "process",
-            "children": [
-                {
-                    "name": "Process 1",
-                    "type": "process",
-                    "children": [
-                        {"name": "Process 2", "type": "process"},
-                        {"name": "File 2", "type": "file"},
-                        {"name": "Network 1", "type": "network"}
-                    ]
-                },
-                {
-                    "name": "File 1",
-                    "type": "file"
-                }
-            ]
-        };
-        update(data)
-        console.log("Search for:", inputValue);
-    })
-
+        performSearch(inputValue).then(edge => {
+            let source = edge["_source"];
+            let data = {
+                "name": edge["_id"],
+                "process_pid": source["process_pid"],
+                "process_guid": source["process_guid"],
+                "type": source["action"],
+                "children": [],
+                "_children": [],
+                "parent": "",
+            };
+            dataForTree = data
+            update(dataForTree);
+        });
+    });
 
     let canvas = d3.select("#svgContainer").append("svg")
-        .attr("width", "100%") // Use 100% width of the container
-        // You might need to adjust the height calculation based on your actual control bar size
-        .attr("height", "calc(100% - 40px)") // Assuming the control bar is 40px high; adjust accordingly
+        .attr("width", "100%")
+        .attr("height", "calc(100% - 40px)")
         .append("g")
         .attr("transform", "translate(50, 50)");
 
     let tree = d3.tree().size([400, 400]);
-    let expanded = [];
-    //require config.json
-    // Define your JSON object here
-    let data = {
-        "name": "Root Process",
-        "pid": "fdjdhs",
-        "type": "process",
-        "children": [
-            {
-                "name": "Process 1",
-                "type": "process",
-                "children": [
-                    {"name": "Process 2", "type": "process"},
-                    {"name": "File 2", "type": "file"},
-                    {"name": "Network 1", "type": "network"}
-                ]
-            },
-            {
-                "name": "File 1",
-                "type": "file"
-            }
-        ]
-    };
+    let data = {};
 
     function update(rootData) {
         canvas.selectAll("*").remove(); // Clear the canvas for redraw
@@ -107,53 +85,75 @@ document.addEventListener('DOMContentLoaded', function () {
         createKey();
     }
 
-    function colorByType(d) {
-        switch (d.data.type) {
-            case "process": return "steelblue";
-            case "network": return "green";
-            case "file": return "red";
-            default: return "purple";
+    async function toggleChildren(d) {
+        if (d.data.children) {//if the node already has children
+            d.data._children = d.data.children;
+            d.data.children = null;
+        } else {
+            d.data.children = d.data._children || [];
+            d.data._children = null;
+            if (!d.data.children.length) { // Only fetch if there are no children loaded yet
+                let childrenData = await performsSearchChildProcess(d.data.process_guid);
+
+                let childrenToAdd = [];
+                const realArray = Object.values(childrenData); // Convert to array
+                for (let i=0; i<childrenData.length; i++) {
+                    let child = childrenData[i]
+                    let childSource = child["_source"];
+                    childrenToAdd.push({
+                        name: child["_id"],
+                        process_pid: childSource["process_pid"],
+                        process_guid: childSource["process_guid"],
+                        type: childSource["action"],
+                        children: [],
+                    });
+                }
+                d.data.children = childrenToAdd
+            }
         }
+        console.log(dataForTree)
+        update(dataForTree);
     }
-
-    function removeChildren(d) {
-        if (d.children) {
-            d.children = null;
+    async function toggleParent(d) {
+        // First, check if the node is the root or treated as such in the visualization
+        if (!d.data.parent || d === dataForTree) {
+            let parentData = await performsSearchParentProcess(d.data.process_guid)
+            console.log(parentData)
+            let randomParent = parentData[Math.floor(Math.random() * 10)]
+            let randomParentSource = randomParent["_source"]
+            dataForTree = {
+                name: randomParent["_id"], // This should be replaced with actual logic to determine a parent
+                process_pid: randomParentSource["process_pid"],
+                process_guid: randomParentSource["process_guid"],
+                type: randomParentSource["action"],
+                children: [dataForTree],
+            };
+            update(dataForTree);
+        } else {
+            // If the node already has a parent, you might want to log a message or handle it differently
+            console.log("Node already has a parent.");
         }
-        update(data);
-    }
-
-    function addChildren(d) {
-        // const id = d.data.id;
-        // var data = searchChildProcess(id);
-
-        let index2 = index+1
-        if (!d.children) {
-            d.children = [
-                {name: "node" + index, type: "file"},
-                {name: "node" + index2, type: "file"}
-            ];
-        }
-        index+=2
-        update(data);
     }
 
     function nodeClick(event, d) {
-        let nodeName = d.data.name;
-        let textBoxValue = textBox.value;
-        let isCheckboxChecked = checkbox.checked;
-        console.log(isCheckboxChecked);
-        console.log(textBoxValue);
-        if (expanded.includes(nodeName)) {
-            removeChildren(d.data);
-            expanded = expanded.filter(e => e !== nodeName); // Remove from expanded list
-        } else {
-            addChildren(d.data);
-            expanded.push(nodeName);
+        const reverse = checkbox.checked
+        if(reverse){
+            toggleParent(d)
+        }else{
+            toggleChildren(d);
+        }
+
+    }
+
+    function colorByType(d) {
+        switch (d.data.type) {
+            case "process": return "purple";
+            case "network": return "green";
+            case "file": return "red";
+            default: return "steelblue";
         }
     }
 
-    // Creating the key
     function createKey() {
         let keyGroup = canvas.append("g")
             .attr("transform", "translate(50, 500)"); // Adjust the position as needed

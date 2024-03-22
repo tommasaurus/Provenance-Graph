@@ -1,23 +1,39 @@
 const PORT = 3000 // Edit this PORT constant based off whatever port you decide to use in server.js
 
+// export function search(id) {
+//     fetch(`http://localhost:${PORT}/search?id=${encodeURIComponent(id)}`).
+//     then(response => response.json()).
+//     then(data => {
+//         if (data) {
+//             console.log(data[0]["_source"]);
+//             console.log(data[0]["_source"]["parent_guid"]);
+//             console.log(data[0]["_source"]["process_guid"]);
+//             console.log(data[0]["_source"]["process_pid"]);
+//             console.log(data[0]["_source"]["childproc_pid"]);
+//             console.log("hello")
+//             return data[0]["_source"]["process_pid"];
+//         } else {
+//             console.log('No data found');
+//             return null;
+//         }
+//     }).
+//     catch(error => console.error('Error:', error));
+// }
 export function search(id) {
-    fetch(`http://localhost:${PORT}/search?id=${encodeURIComponent(id)}`).
-    then(response => response.json()).
-    then(data => {
-        if (data) {
-            console.log(data[0]["_source"]);
-            console.log("parent: " + data[0]["_source"]["parent_guid"]);
-            console.log("process: " + data[0]["_source"]["process_guid"]);
-            console.log("child_process: " + data[0]["_source"]["childproc_guid"]);
-            console.log(data[0]["_source"]["process_pid"]);
-            console.log(data[0]["_source"]["childproc_pid"]);
-            return data[0];  
-        } else {
-            console.log('No data found');
-            return null;
-        }
-    }).
-    catch(error => console.error('Error:', error));
+    return fetch(`http://localhost:${PORT}/search?id=${encodeURIComponent(id)}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data) {
+                return data[0];
+            } else {
+                console.log('No data found');
+                return null;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            return Promise.reject(error);
+        });
 }
 
 export function searchByPID(pid) {
@@ -84,35 +100,27 @@ export function searchProcessPID(pid) {
     catch(error => console.error('Error:', error));
 }
 
-export function searchChildProcess(guid) {
-    fetch(`http://localhost:${PORT}/search_child_process_by_guid?guid=${encodeURIComponent(guid)}`).
-    then(response => response.json()).
-    then(data => {
+export async function searchChildProcess(guid) {
+    try {
+        const response = await fetch(`http://localhost:${PORT}/search_child_process_by_guid?guid=${encodeURIComponent(guid)}`);
+        const data = await response.json();
         if (data) {
-            console.log(data);
-            console.log(data[1]["_source"]["process_guid"]);
-            console.log(data[0]["_source"]["process_guid"]);                        
-            return data[0]["_source"]["process_guid"];  
+            return data;
         } else {
             console.log('No data found');
-            return null; 
+            return null;
         }
-    }).
-    catch(error => console.error('Error:', error));
+    } catch (error) {
+        console.error('Error:', error);
+    }
 }
 
-export function searchParentProcess(guid) {
-    fetch(`http://localhost:${PORT}/search_parent_process_by_guid?guid=${encodeURIComponent(guid)}`).
-    then(response => response.json()).
-    then(data => {
-        if (data) {
-            
-            console.log(data);            
-            return data[0];  
-        } else {
-            console.log('No data found');
-            return null; 
-        }
-    }).
-    catch(error => console.error('Error:', error));
+export async function searchParentProcess(guid) {
+    try {
+        const response = await fetch(`http://localhost:${PORT}/search_parent_process_by_guid?guid=${encodeURIComponent(guid)}`);
+        return await response.json();
+    } catch (error) {
+        console.error('Error:', error);
+        return null;
+    }
 }
