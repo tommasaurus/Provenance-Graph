@@ -6,8 +6,9 @@ export function search(id) {
     then(data => {
         if (data) {
             console.log(data[0]["_source"]);
-            console.log(data[0]["_source"]["parent_guid"]);
-            console.log(data[0]["_source"]["process_guid"]);
+            console.log("parent: " + data[0]["_source"]["parent_guid"]);
+            console.log("process: " + data[0]["_source"]["process_guid"]);
+            console.log("child_process: " + data[0]["_source"]["childproc_guid"]);
             console.log(data[0]["_source"]["process_pid"]);
             console.log(data[0]["_source"]["childproc_pid"]);
             return data[0];  
@@ -88,9 +89,10 @@ export function searchChildProcess(guid) {
     then(response => response.json()).
     then(data => {
         if (data) {
-            
-            console.log(data);            
-            return data[0];  
+            console.log(data);
+            console.log(data[1]["_source"]["process_guid"]);
+            console.log(data[0]["_source"]["process_guid"]);                        
+            return data[0]["_source"]["process_guid"];  
         } else {
             console.log('No data found');
             return null; 

@@ -131,8 +131,11 @@ app.get('/search_child_process_by_guid', async (req, res) => {
                     bool: {
                         must: [
                             {
+                                // match: {
+                                //     parent_guid: guid 
+                                // }
                                 match: {
-                                    parent_guid: guid 
+                                    process_guid: guid
                                 }
                             },
                             {
