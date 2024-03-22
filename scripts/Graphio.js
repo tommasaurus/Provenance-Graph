@@ -118,13 +118,7 @@ export async function searchChildProcess(guid) {
 export async function searchParentProcess(guid) {
     try {
         const response = await fetch(`http://localhost:${PORT}/search_parent_process_by_guid?guid=${encodeURIComponent(guid)}`);
-        const data = await response.json();
-        if (data) {
-            return data;
-        } else {
-            console.log('No data found');
-            return null;
-        }
+        return await response.json();
     } catch (error) {
         console.error('Error:', error);
         return null;

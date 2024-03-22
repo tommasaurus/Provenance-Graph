@@ -117,15 +117,17 @@ document.addEventListener('DOMContentLoaded', function () {
     async function toggleParent(d) {
         // First, check if the node is the root or treated as such in the visualization
         if (!d.data.parent || d === dataForTree) {
-            // let parentData = await performsSearchParentProcess(d.data.process_guid)
-            let parentToAdd = {
-                name: "NewParentNodeID", // This should be replaced with actual logic to determine a parent
-                process_pid: "ParentPID",
-                process_guid: "ParentGUID",
-                type: "process",
+            let parentData = await performsSearchParentProcess(d.data.process_guid)
+            console.log(parentData)
+            let randomParent = parentData[Math.floor(Math.random() * 10)]
+            let randomParentSource = randomParent["_source"]
+            dataForTree = {
+                name: randomParent["_id"], // This should be replaced with actual logic to determine a parent
+                process_pid: randomParentSource["process_pid"],
+                process_guid: randomParentSource["process_guid"],
+                type: randomParentSource["action"],
                 children: [dataForTree],
             };
-            dataForTree = parentToAdd;
             update(dataForTree);
         } else {
             // If the node already has a parent, you might want to log a message or handle it differently
