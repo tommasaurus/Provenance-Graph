@@ -16,104 +16,17 @@ app.get('/search', async (req, res) => {
     try {
         const { id } = req.query;
         const executedQuery = {
-            index: 'atlasv2-edr-h1-s4',
+            index: dbConfig.name,
             body: {
                 query: {
-                    match: {
+                    term: {
                         _id: id//'XcLR0ooBBBvBsP_nxiN9' "HcLR0ooBBBvBsP_nxiNu"
                     }
                 }
             }
         };
         var response = await client.search(executedQuery);
-        const data = response.hits.hits;        
-        res.json(data);
-    } catch (error) {
-        res.status(500).send(error.toString());
-    }
-});
-
-app.get('/searchbypid', async (req, res) => {
-    try {
-        const { id } = req.query;
-        const executedQuery = {
-            index: dbConfig.name,
-            body: {
-                query: {
-                    match: {
-                        process_pid: id//'XcLR0ooBBBvBsP_nxiN9'
-                    }
-                }
-            }
-        };
-        var response = await client.search(executedQuery);
-        const data = response.hits.hits;        
-        res.json(data);
-    } catch (error) {
-        res.status(500).send(error.toString());
-    }
-});
-
-app.get('/searchparent', async (req, res) => {
-    try {
-        const { id } = req.query;
-        const executedQuery = {
-            index: dbConfig.name,
-            body: {
-                query: {
-                    match: {
-                        parent_guid: id//'XcLR0ooBBBvBsP_nxiN9'
-                    }
-                },
-                size: 100
-            }
-        };
-        var response = await client.search(executedQuery);
-        const data = response.hits.hits;        
-        res.json(data);
-    } catch (error) {
-        res.status(500).send(error.toString());
-    }
-});
-
-app.get('/searchparentbypid', async (req, res) => {
-    try {
-        const { id } = req.query;
-        const executedQuery = {
-            index: dbConfig.name,
-            body: {
-                query: {
-                    match: {
-                        parent_pid: id//'XcLR0ooBBBvBsP_nxiN9'
-                    }
-                },
-                size: 100
-            }
-        };
-        var response = await client.search(executedQuery);
-        const data = response.hits.hits;        
-        res.json(data);
-    } catch (error) {
-        res.status(500).send(error.toString());
-    }
-});
-
-app.get('/searchprocesspid', async (req, res) => {
-    try {
-        const { id } = req.query;
-        const executedQuery = {
-            index: dbConfig.name,
-            body: {
-                query: {
-                    match: {
-                        process_pid: id//'XcLR0ooBBBvBsP_nxiN9'
-                    }
-                },
-                size: 100
-            }
-        };
-        var response = await client.search(executedQuery);
-        const data = response.hits.hits;        
+        const data = response.hits.hits;
         res.json(data);
     } catch (error) {
         res.status(500).send(error.toString());
@@ -121,9 +34,9 @@ app.get('/searchprocesspid', async (req, res) => {
 });
 
 // Query to search for the child process of the current process using the current process' guid
-app.get('/search_child_process_by_guid', async (req, res) => {
+app.get('/search_child_process', async (req, res) => {
     try {
-        const { guid } = req.query;
+        const { guid, pid, parent_pid, size } = req.query;
         const executedQuery = {
             index: dbConfig.name,
             body: {
@@ -131,22 +44,24 @@ app.get('/search_child_process_by_guid', async (req, res) => {
                     bool: {
                         must: [
                             {
-                                // match: {
-                                //     parent_guid: guid 
-                                // }
                                 match: {
                                     process_guid: guid
                                 }
                             },
                             {
                                 match: {
-                                    action: dbConfig.process.create
+                                    process_pid: pid
+                                }
+                            },
+                            {
+                                match: {
+                                    parent_pid: parent_pid
                                 }
                             }
                         ]
                     }
                 },
-                size: 10
+                size: size
             }
         };
         var response = await client.search(executedQuery);
@@ -158,9 +73,9 @@ app.get('/search_child_process_by_guid', async (req, res) => {
 });
 
 // Query to search for the parent process of the current process using the current process' parent_guid
-app.get('/search_parent_process_by_guid', async (req, res) => {
+app.get('/search_parent_process', async (req, res) => {
     try {
-        const { guid } = req.query;
+        const { guid, pid, path, child_guid} = req.query;
         const executedQuery = {
             index: dbConfig.name,
             body: {
@@ -174,7 +89,17 @@ app.get('/search_parent_process_by_guid', async (req, res) => {
                             },
                             {
                                 match: {
-                                    action: dbConfig.process.create
+                                    process_pid: pid
+                                }
+                            },
+                            {
+                                match: {
+                                    process_path: path
+                                }
+                            },
+                            {
+                                match: {
+                                    childproc_guid: child_guid
                                 }
                             }
                         ]
